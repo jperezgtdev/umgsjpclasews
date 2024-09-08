@@ -2,12 +2,14 @@ package com.umg.repositorio.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jp.microservice.entity.Estudiante;
 import com.umg.repositorio.entity.Estudiantes;
 import com.umg.repositorio.repository.IEstudiantesRepository;
 import com.umg.repositorio.services.IEstudiantes;
@@ -38,14 +40,22 @@ public class EstudiantesImpl implements IEstudiantes {
 
 	@Override
 	public Estudiantes update(Integer id, Estudiantes estudiante) {
-		Estudiantes estudiantes = new Estudiantes();
-		return estudiantes;
+		Optional<Estudiantes> optionalEstudiante = estudianteRepository.findById(id);
+		
+		if(optionalEstudiante.isPresent())
+			return estudianteRepository.save(estudiante);
+		
+		return null;
 	}
 
 	@Override
-	public String deleteById(Integer id) {
-		// TODO Auto-generated method stub
-		return "Eliminado con id " + id;
+	public Integer deleteById(Integer id) {
+		if(!estudianteRepository.existsById(id))
+			return 404;
+		else {
+			estudianteRepository.deleteById(id);
+			return 204;
+		}
 	}
 
 }
